@@ -41,6 +41,7 @@
                                 <td>{{ $employee->first_name }}</td>
                                 <td>{{ $employee->last_name }}</td>
                                 <td>{{ $employee->company->name }}</td>
+                                <td>{{ $employee->email }}</td>
                                 <td>{{ $employee->phone }}</td>
                                 <td>
                                     <a href="{{ route('employees.edit', $employee->id) }}" class="btn btn-secondary btn-sm">Edit</a>

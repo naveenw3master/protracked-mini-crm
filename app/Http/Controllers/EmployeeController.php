@@ -75,7 +75,9 @@ class EmployeeController extends Controller
     {
         $employee = Employee::find($id);
 
-        return view('employees.edit', compact('employee'));
+        $companies = Company::select('id', 'name')->orderBy('name', 'asc')->pluck('name', 'id');
+
+        return view('employees.edit', compact('employee', 'companies'));
     }
 
     /**
