@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
+use App\Models\Company;
+
 class CompanyController extends Controller
 {
     /**
@@ -13,7 +15,8 @@ class CompanyController extends Controller
      */
     public function index()
     {
-        //
+        $companies = Company::paginate(10);
+        return view('companies.index', compact('companies'));
     }
 
     /**
@@ -23,7 +26,7 @@ class CompanyController extends Controller
      */
     public function create()
     {
-        //
+        return view('companies.create');
     }
 
     /**
@@ -34,7 +37,24 @@ class CompanyController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'name' => 'required|max:255',
+            'email' => 'nullable|email|max:255',
+            'logo' => 'nullable|image|max:5120|dimensions:min_width=100,min_height=100',
+            'website' => 'nullable|url|max:255',
+        ]);
+
+        $fileName = null;
+        if ($request->hasFile('logo')) {
+            $fileName = uniqid('company_logo_', true).'.'.$request->logo->extension();
+            $request->logo->move(public_path('storage/company-logos'), $fileName);
+        }
+
+        $company = new Company($request->all());
+        if($fileName) $company->logo = $fileName;
+        $company->save();
+        
+        return redirect()->route('companies.index')->with('success', __('Company Created Successfully!'));
     }
 
     /**
