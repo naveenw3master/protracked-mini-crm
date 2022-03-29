@@ -76,7 +76,9 @@ class CompanyController extends Controller
      */
     public function edit($id)
     {
-        //
+        $company = Company::find($id);
+
+        return view('companies.edit', compact('company'));
     }
 
     /**
@@ -88,7 +90,26 @@ class CompanyController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $request->validate([
+            'name' => 'required|max:255',
+            'email' => 'nullable|email|max:255',
+            'logo' => 'nullable|image|max:5120|dimensions:min_width=100,min_height=100',
+            'website' => 'nullable|url|max:255',
+        ]);
+
+        $company = Company::find($id);
+
+        $fileName = null;
+        if ($request->hasFile('logo')) {
+            $fileName = uniqid('company_logo_', true).'.'.$request->logo->extension();
+            $request->logo->move(public_path('storage/company-logos'), $fileName);
+        }
+
+        $company->fill($request->only(['name', 'email', 'website']));
+        if($fileName) $company->logo = $fileName;
+        $company->update();
+
+        return redirect()->route('companies.index')->with('success', __('Company Updated Successfully!'));
     }
 
     /**
@@ -99,6 +120,9 @@ class CompanyController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $company = Company::find($id);
+        $company->delete();
+
+        return redirect()->route('companies.index')->with('success', __('Company Deleted Successfully!'));
     }
 }

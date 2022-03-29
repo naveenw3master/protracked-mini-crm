@@ -46,7 +46,12 @@
                                 </td>
                                 <td>{{ $company->website }}</td>
                                 <td>
-                                    
+                                    <a href="{{ route('companies.edit', $company->id) }}" class="btn btn-secondary btn-sm">Edit</a>
+                                    {{ Form::open(array('route' => ['companies.destroy', $company->id], 'method' => 'post')) }}
+                                        @csrf
+                                        @method('delete')
+                                        <button type="submit" onclick="return confirm('Are you sure do you want to Delete?');" class="btn btn-danger btn-sm">Delete</button>   
+                                    </form>                                 
                                 </td>
                             </tr>
                         @endforeach
