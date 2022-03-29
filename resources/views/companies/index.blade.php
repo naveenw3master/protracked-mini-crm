@@ -63,6 +63,9 @@
                         </tbody>
                     </table>
                 </div>
+                <div class="card-footer clearfix">
+                    {{ $companies->withQueryString()->links('vendor.pagination.bootstrap-4') }}
+                </div>
             </div>
         </div>
     </div>
